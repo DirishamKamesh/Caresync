@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Appointments | CareSync Admin</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977","outline-variant":"#bdc9c6"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"},fontFamily:{h1:["Inter"],"label-caps":["Inter"]},fontSize:{h1:["24px",{lineHeight:"1.3",fontWeight:"600"}],"label-caps":["12px",{lineHeight:"1",letterSpacing:"0.05em",fontWeight:"600"}]}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="cs-header"><div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div></header>
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+<aside class="cs-sidebar" id="cs-sidebar"></aside>
+<div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+<main class="cs-main">
+
+  <!-- Header + Stats -->
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px" data-aos="fade-up">
+    <div>
+      <h1 class="cs-page-title">Appointments Management</h1>
+      <p class="cs-page-subtitle">Review and update status for all scheduled appointments.</p>
+    </div>
+  </div>
+
+  <!-- Quick stats -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:24px" data-aos="fade-up" data-aos-delay="50">
+    <div class="cs-stat-card" style="padding:16px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#6e7977;margin-bottom:4px">Total</p>
+      <p style="font-size:28px;font-weight:800;color:#181c1c" id="qs-total">0</p>
+    </div>
+    <div class="cs-stat-card" style="padding:16px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#d97706;margin-bottom:4px">Pending</p>
+      <p style="font-size:28px;font-weight:800;color:#d97706" id="qs-pending">0</p>
+    </div>
+    <div class="cs-stat-card" style="padding:16px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#16a34a;margin-bottom:4px">Approved</p>
+      <p style="font-size:28px;font-weight:800;color:#16a34a" id="qs-approved">0</p>
+    </div>
+    <div class="cs-stat-card" style="padding:16px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#dc2626;margin-bottom:4px">Rejected</p>
+      <p style="font-size:28px;font-weight:800;color:#dc2626" id="qs-rejected">0</p>
+    </div>
+    <div class="cs-stat-card" style="padding:16px">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#2563eb;margin-bottom:4px">Completed</p>
+      <p style="font-size:28px;font-weight:800;color:#2563eb" id="qs-completed">0</p>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="cs-card" style="padding:0" data-aos="fade-up" data-aos-delay="100">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;padding:18px 20px;border-bottom:1px solid #f1f4f3">
+      <div class="cs-input-icon" style="max-width:300px;flex:1">
+        <span class="material-symbols-outlined icon">search</span>
+        <input class="cs-input" id="search-input" type="search" placeholder="Search patient or doctor…" style="background:#f1f4f3"/>
+      </div>
+      <div style="display:flex;gap:6px;flex-wrap:wrap" id="status-filters">
+        <button class="cs-btn cs-btn-outline cs-btn-sm active-filter" data-filter="">All</button>
+        <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Pending">Pending</button>
+        <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Approved">Approved</button>
+        <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Rejected">Rejected</button>
+        <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Completed">Completed</button>
+      </div>
+    </div>
+
+    <div class="cs-table-wrapper" style="border:none;border-radius:0" id="apts-table">
+      <table class="cs-table">
+        <thead>
+          <tr><th>Patient</th><th>Doctor</th><th>Date & Time</th><th>Reason</th><th>Status</th><th style="text-align:right">Actions</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="apts-pagination"></div>
+  </div>
+
+</main></div>
+<div id="cs-toast-container"></div>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="assets/js/admin.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+if (!guardRoute(['Admin'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role:'Admin', activePage:'admin-appointments.html' });
+document.getElementById('sidebar-toggle')?.addEventListener('click',()=>{
+  const s=document.getElementById('cs-sidebar'),o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';
+});
+
+function updateQuickStats() {
+  const apts = Store.get(KEYS.APPOINTMENTS);
+  document.getElementById('qs-total').textContent = apts.length;
+  ['Pending','Approved','Rejected','Completed'].forEach(s =>
+    document.getElementById(`qs-${s.toLowerCase()}`).textContent = apts.filter(a=>a.status===s).length
+  );
+}
+updateQuickStats();
+
+const tableCtrl = buildTablePage({
+  containerId:'apts-table', paginationId:'apts-pagination', columns:6,
+  searchFields:['patient_name_cache','doctor_name_cache'],
+  getData() {
+    const patients = Store.get(KEYS.PATIENTS);
+    const doctors  = Store.get(KEYS.DOCTORS);
+    return Store.get(KEYS.APPOINTMENTS).map(a => ({
+      ...a,
+      patient_name_cache: patients.find(p=>p.id===a.patient_id)?.name||'Unknown',
+      doctor_name_cache:  doctors.find(d=>d.id===a.doctor_id)?.name||'Unknown',
+    })).sort((a,b)=>new Date(b.date_time)-new Date(a.date_time));
+  },
+  renderRow(a,q) {
+    const actions = {
+      Pending:  `<button class="cs-btn cs-btn-success cs-btn-sm" onclick="updateAppointmentStatus('${a.id}','Approved');refresh()">Approve</button>
+                 <button class="cs-btn cs-btn-danger cs-btn-sm" onclick="updateAppointmentStatus('${a.id}','Rejected');refresh()">Reject</button>`,
+      Approved: `<button class="cs-btn cs-btn-primary cs-btn-sm" onclick="updateAppointmentStatus('${a.id}','Completed');refresh()">Complete</button>`,
+      Rejected: `<span style="font-size:12px;color:#6e7977">No actions</span>`,
+      Completed:`<span style="font-size:12px;color:#6e7977">Done</span>`,
+    };
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">${avatarEl(a.patient_name_cache,30)}<span style="font-size:13px;font-weight:600">${highlightText(a.patient_name_cache,q)}</span></div></td>
+      <td style="font-size:13px">${highlightText(a.doctor_name_cache,q)}</td>
+      <td><div style="font-size:13px;font-weight:600">${fmtTime(a.date_time)}</div><div style="font-size:11px;color:#6e7977">${fmtDate(a.date_time)}</div></td>
+      <td style="font-size:12px;color:#3e4947;max-width:160px">${escHtml(a.reason||'—')}</td>
+      <td>${statusBadge(a.status)}</td>
+      <td style="text-align:right"><div style="display:flex;gap:6px;justify-content:flex-end;flex-wrap:wrap">${actions[a.status]||''}</div></td>
+    </tr>`;
+  }
+});
+function refresh() { tableCtrl.refresh(); updateQuickStats(); }
+window._tableRefresh = refresh;
+</script>
+<style>
+.active-filter{background:#005c55!important;color:#fff!important;border-color:#005c55!important}
+html.dark body{background:#0f1a19}html.dark .cs-main{background:#0f1a19!important}
+</style>
+</body></html>

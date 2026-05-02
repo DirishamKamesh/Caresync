@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Appointments | CareSync Patient</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="cs-header"><div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div></header>
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+<aside class="cs-sidebar" id="cs-sidebar"></aside>
+<div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+<main class="cs-main">
+  <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:24px" data-aos="fade-up">
+    <div><h1 class="cs-page-title">My Appointments</h1><p class="cs-page-subtitle">View all your scheduled appointments and their status.</p></div>
+    <button class="cs-btn cs-btn-primary" onclick="openBookingModal()">
+      <span class="material-symbols-outlined" style="font-size:18px">add</span> Book New
+    </button>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px" data-aos="fade-up" data-aos-delay="50">
+    <button class="cs-btn cs-btn-outline cs-btn-sm active-filter" data-filter="">All</button>
+    <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Pending">Pending</button>
+    <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Approved">Approved</button>
+    <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Rejected">Rejected</button>
+    <button class="cs-btn cs-btn-outline cs-btn-sm" data-filter="Completed">Completed</button>
+  </div>
+
+  <div class="cs-card" style="padding:0" data-aos="fade-up" data-aos-delay="100">
+    <div class="cs-table-wrapper" style="border:none;border-radius:0" id="pt-apts-table">
+      <table class="cs-table">
+        <thead><tr><th>Doctor</th><th>Specialisation</th><th>Date & Time</th><th>Reason</th><th>Status</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="pt-apts-pagination"></div>
+  </div>
+</main></div>
+<div id="cs-toast-container"></div>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="assets/js/admin.js"></script>
+<script src="assets/js/patient.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+if (!guardRoute(['Patient'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role:'Patient', activePage:'patient-appointments.html' });
+document.getElementById('sidebar-toggle')?.addEventListener('click',()=>{
+  const s=document.getElementById('cs-sidebar'),o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';
+});
+const user = Auth.getSession();
+const ptId = user?.linkedProfileId;
+
+const tableCtrl = buildTablePage({
+  containerId:'pt-apts-table', paginationId:'pt-apts-pagination', columns:5,
+  searchFields:['doctor_name_cache'],
+  getData() {
+    const doctors = Store.get(KEYS.DOCTORS);
+    return Store.get(KEYS.APPOINTMENTS)
+      .filter(a => a.patient_id === ptId)
+      .map(a => ({ ...a, doctor_name_cache: doctors.find(d=>d.id===a.doctor_id)?.name||'Unknown', doctor_spec: doctors.find(d=>d.id===a.doctor_id)?.specialisation||'—' }))
+      .sort((a,b) => new Date(b.date_time)-new Date(a.date_time));
+  },
+  renderRow(a) {
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px">${avatarEl(a.doctor_name_cache,30)}<p style="font-size:13px;font-weight:600">${escHtml(a.doctor_name_cache)}</p></div></td>
+      <td><span style="background:#e8f7f5;color:#005c55;padding:3px 9px;border-radius:9999px;font-size:11px;font-weight:600">${escHtml(a.doctor_spec)}</span></td>
+      <td><div style="font-size:13px;font-weight:600">${fmtTime(a.date_time)}</div><div style="font-size:11px;color:#6e7977">${fmtDate(a.date_time)}</div></td>
+      <td style="font-size:12px;color:#3e4947;max-width:180px">${escHtml(a.reason||'—')}</td>
+      <td>${statusBadge(a.status)}</td>
+    </tr>`;
+  }
+});
+window._tableRefresh = ()=>tableCtrl.refresh();
+</script>
+<style>.active-filter{background:#005c55!important;color:#fff!important;border-color:#005c55!important}html.dark body{background:#0f1a19}html.dark .cs-main{background:#0f1a19!important}</style>
+</body></html>

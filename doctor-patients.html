@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Patients | CareSync Doctor</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="cs-header"><div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div></header>
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+<aside class="cs-sidebar" id="cs-sidebar"></aside>
+<div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+<main class="cs-main">
+  <div style="margin-bottom:24px" data-aos="fade-up">
+    <h1 class="cs-page-title">My Patients</h1>
+    <p class="cs-page-subtitle">Patients who have had appointments with you.</p>
+  </div>
+
+  <div class="cs-card" style="padding:0" data-aos="fade-up" data-aos-delay="50">
+    <div style="padding:16px 20px;border-bottom:1px solid #f1f4f3">
+      <div class="cs-input-icon" style="max-width:320px">
+        <span class="material-symbols-outlined icon">search</span>
+        <input class="cs-input" id="search-input" type="search" placeholder="Search patient name or ID…" style="background:#f1f4f3"/>
+      </div>
+    </div>
+    <div id="my-patients-table" class="cs-table-wrapper" style="border:none;border-radius:0">
+      <table class="cs-table">
+        <thead><tr><th>Patient</th><th>Patient ID</th><th>Age / Gender</th><th>Last Visit</th><th>Total Visits</th><th style="text-align:right">Actions</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <div id="my-patients-pagination"></div>
+  </div>
+</main></div>
+<div id="cs-toast-container"></div>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="assets/js/admin.js"></script>
+<script src="assets/js/doctor.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+if (!guardRoute(['Doctor'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role:'Doctor', activePage:'doctor-patients.html' });
+document.getElementById('sidebar-toggle')?.addEventListener('click',()=>{
+  const s=document.getElementById('cs-sidebar'),o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';
+});
+const user = Auth.getSession();
+const dId  = user?.linkedProfileId;
+
+buildTablePage({
+  containerId:'my-patients-table', paginationId:'my-patients-pagination', columns:6,
+  searchFields:['name','unique_patient_id'],
+  getData() {
+    const apts = Store.get(KEYS.APPOINTMENTS).filter(a=>a.doctor_id===dId);
+    const ptIds = [...new Set(apts.map(a=>a.patient_id))];
+    return Store.get(KEYS.PATIENTS)
+      .filter(p=>ptIds.includes(p.id))
+      .map(p => {
+        const myApts = apts.filter(a=>a.patient_id===p.id).sort((a,b)=>new Date(b.date_time)-new Date(a.date_time));
+        return { ...p, _lastVisit: myApts[0]?.date_time||null, _totalVisits: myApts.length };
+      });
+  },
+  renderRow(p,q) {
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:10px">${avatarEl(p.name,36)}<p style="font-weight:600;font-size:14px">${highlightText(p.name,q)}</p></div></td>
+      <td><code style="font-size:12px;background:#f1f4f3;padding:3px 7px;border-radius:5px;color:#005c55">${escHtml(p.unique_patient_id)}</code></td>
+      <td style="font-size:13px">${escHtml(p.age)} / ${escHtml(p.gender)}</td>
+      <td style="font-size:12px;color:#6e7977">${p._lastVisit?fmtDate(p._lastVisit):'—'}</td>
+      <td><span style="font-size:13px;font-weight:700;color:#005c55">${p._totalVisits}</span></td>
+      <td style="text-align:right">
+        <button class="cs-btn cs-btn-outline cs-btn-sm" onclick="openPrescriptionModal('${p.id}',null)">+ Rx</button>
+      </td>
+    </tr>`;
+  }
+});
+</script>
+<style>html.dark body{background:#0f1a19}html.dark .cs-main{background:#0f1a19!important}</style>
+</body></html>

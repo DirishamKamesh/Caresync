@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Login | CareSync Medical Systems</title>
+<meta name="description" content="Secure login to CareSync Hospital Management System"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  darkMode:"class",
+  theme:{extend:{colors:{"surface-container-lowest":"#ffffff","primary":"#005c55","primary-container":"#0f766e","primary-fixed":"#9cf2e8","primary-fixed-dim":"#80d5cb","on-primary":"#ffffff","on-primary-container":"#a3faef","on-primary-fixed":"#00201d","secondary":"#545f73","secondary-container":"#d5e0f8","secondary-fixed":"#d8e3fb","on-secondary":"#ffffff","on-secondary-container":"#586377","tertiary":"#7f4025","tertiary-container":"#9c573a","tertiary-fixed":"#ffdbce","tertiary-fixed-dim":"#ffb598","on-tertiary":"#ffffff","on-tertiary-fixed":"#370e00","on-tertiary-fixed-variant":"#72361b","background":"#f7faf8","surface":"#f7faf8","surface-bright":"#f7faf8","surface-dim":"#d7dbd9","surface-container":"#ebefed","surface-container-low":"#f1f4f3","surface-container-high":"#e5e9e7","surface-container-highest":"#e0e3e1","surface-variant":"#e0e3e1","on-background":"#181c1c","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977","outline-variant":"#bdc9c6","inverse-surface":"#2d3130","inverse-primary":"#80d5cb","inverse-on-surface":"#eef1f0","error":"#ba1a1a","error-container":"#ffdad6","on-error":"#ffffff","on-error-container":"#93000a","surface-tint":"#006a63"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-padding":"24px","stack-lg":"24px","stack-sm":"4px","gutter":"16px","stack-md":"12px","base":"8px"},fontFamily:{h1:["Inter"],h2:["Inter"],display:["Inter"],"label-caps":["Inter"],"body-lg":["Inter"],"body-sm":["Inter"],badge:["Inter"]},fontSize:{h1:["24px",{lineHeight:"1.3",letterSpacing:"-0.01em",fontWeight:"600"}],h2:["20px",{lineHeight:"1.4",fontWeight:"600"}],display:["36px",{lineHeight:"1.2",letterSpacing:"-0.02em",fontWeight:"700"}],"label-caps":["12px",{lineHeight:"1",letterSpacing:"0.05em",fontWeight:"600"}],"body-lg":["16px",{lineHeight:"1.6",fontWeight:"400"}],"body-sm":["14px",{lineHeight:"1.5",fontWeight:"400"}],badge:["12px",{lineHeight:"1",fontWeight:"500"}]}}}
+}
+</script>
+</head>
+<body class="bg-background text-on-surface flex flex-col min-h-screen">
+
+<!-- Background blobs -->
+<div class="fixed inset-0 overflow-hidden pointer-events-none -z-10">
+  <div style="position:absolute;top:-10%;right:-5%;width:480px;height:480px;background:radial-gradient(circle,rgba(0,92,85,0.07) 0%,transparent 70%);border-radius:50%"></div>
+  <div style="position:absolute;bottom:10%;left:-10%;width:380px;height:380px;background:radial-gradient(circle,rgba(128,213,203,0.08) 0%,transparent 70%);border-radius:50%"></div>
+</div>
+
+<main class="flex-grow flex items-center justify-center px-4 py-12">
+  <div class="w-full max-w-md">
+
+    <!-- Demo Badge -->
+    <div class="flex justify-center mb-6" data-aos="fade-down">
+      <div class="cs-demo-badge">
+        <span class="material-symbols-outlined" style="font-size:14px">info</span>
+        Demo Mode (Front-end Only)
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="cs-card" data-aos="fade-up">
+      <!-- Brand -->
+      <div class="flex flex-col items-center mb-8">
+        <div style="width:56px;height:56px;background:#005c55;border-radius:14px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 24px rgba(0,92,85,0.3)">
+          <span class="material-symbols-outlined" style="color:#fff;font-size:30px">local_hospital</span>
+        </div>
+        <h1 style="font-size:28px;font-weight:800;color:#005c55;letter-spacing:-0.02em;margin-bottom:6px">CareSync</h1>
+        <p class="text-on-surface-variant" style="font-size:13px;text-align:center">Smart Hospital Management System<br/>Secure access to clinical workflows</p>
+      </div>
+
+      <!-- Demo Users Quick-Select -->
+      <div style="background:#f1f4f3;border-radius:10px;padding:14px;margin-bottom:24px" data-aos="fade-up" data-aos-delay="50">
+        <p class="font-label-caps text-on-surface-variant" style="margin-bottom:10px">Quick Demo Login</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <button class="quick-login cs-btn cs-btn-outline cs-btn-sm" data-user="admin" data-pass="admin123" data-role="Admin">👤 Admin</button>
+          <button class="quick-login cs-btn cs-btn-outline cs-btn-sm" data-user="dr.smith" data-pass="doctor123" data-role="Doctor">🩺 Doctor</button>
+          <button class="quick-login cs-btn cs-btn-outline cs-btn-sm" data-user="john.doe" data-pass="patient123" data-role="Patient">🏥 Patient</button>
+        </div>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" novalidate>
+        <!-- Username -->
+        <div style="margin-bottom:16px">
+          <label class="cs-label" for="username">Username</label>
+          <div class="cs-input-icon">
+            <span class="material-symbols-outlined icon">person</span>
+            <input class="cs-input" type="text" id="username" placeholder="e.g. admin" autocomplete="username" required/>
+          </div>
+          <p class="field-error" id="err-username" style="display:none;color:#ba1a1a;font-size:12px;margin-top:4px"></p>
+        </div>
+
+        <!-- Password -->
+        <div style="margin-bottom:16px">
+          <label class="cs-label" for="password">Password</label>
+          <div class="cs-input-icon" style="position:relative">
+            <span class="material-symbols-outlined icon">lock</span>
+            <input class="cs-input" type="password" id="password" placeholder="••••••••" autocomplete="current-password" required/>
+            <button type="button" id="toggle-pw" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;color:#6e7977">
+              <span class="material-symbols-outlined" style="font-size:20px">visibility</span>
+            </button>
+          </div>
+          <p class="field-error" id="err-password" style="display:none;color:#ba1a1a;font-size:12px;margin-top:4px"></p>
+        </div>
+
+        <!-- Role -->
+        <div style="margin-bottom:24px">
+          <label class="cs-label" for="role">Role</label>
+          <select class="cs-select" id="role" required>
+            <option value="">Select your role…</option>
+            <option value="Admin">Administrator</option>
+            <option value="Doctor">Doctor</option>
+            <option value="Patient">Patient</option>
+          </select>
+          <p class="field-error" id="err-role" style="display:none;color:#ba1a1a;font-size:12px;margin-top:4px"></p>
+        </div>
+
+        <!-- Error Banner -->
+        <div id="login-error" style="display:none;background:#ffdad6;border:1px solid #ba1a1a;border-radius:8px;padding:12px 14px;margin-bottom:16px;font-size:13px;color:#7f1d1d;display:none;align-items:center;gap:8px">
+          <span class="material-symbols-outlined" style="font-size:18px;color:#ba1a1a">error</span>
+          <span id="login-error-msg">Invalid credentials</span>
+        </div>
+
+        <!-- Submit -->
+        <button type="submit" class="cs-btn cs-btn-primary" id="login-btn" style="width:100%;justify-content:center;padding:14px;font-size:15px">
+          <span class="material-symbols-outlined" style="font-size:20px">login</span>
+          Sign In
+        </button>
+
+        <div style="position:relative;margin:24px 0;text-align:center">
+          <div style="position:absolute;inset:0;display:flex;align-items:center"><div style="width:100%;border-top:1px solid #e8eeec"></div></div>
+          <span style="position:relative;padding:0 10px;background:#fff;font-size:12px;color:#6e7977">Or continue with</span>
+        </div>
+
+        <button type="button" id="google-login-btn" class="cs-btn cs-btn-outline" style="width:100%;justify-content:center;gap:10px;border-color:#bdc9c6;color:#181c1c">
+          <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/action/google.svg" width="18" alt="Google">
+          Sign in with Google
+        </button>
+      </form>
+
+      <!-- Footer links -->
+      <div style="margin-top:24px;padding-top:20px;border-top:1px solid #e8eeec;display:flex;justify-content:center;gap:24px">
+        <a href="#" style="font-size:12px;color:#6e7977;text-decoration:none" class="hover:text-primary transition-colors">Privacy</a>
+        <a href="#" style="font-size:12px;color:#6e7977;text-decoration:none" class="hover:text-primary transition-colors">Support</a>
+        <a href="index.html" style="font-size:12px;color:#6e7977;text-decoration:none" class="hover:text-primary transition-colors">Home</a>
+      </div>
+    </div>
+
+    <!-- Demo credentials hint -->
+    <div style="margin-top:20px;background:#f1f4f3;border-radius:10px;padding:14px" data-aos="fade-up" data-aos-delay="100">
+      <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#545f73;margin-bottom:8px">Demo Credentials</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;font-size:12px">
+        <div style="text-align:center;padding:8px;background:#fff;border-radius:8px;border:1px solid #e8eeec">
+          <div style="font-weight:700;color:#005c55">Admin</div>
+          <div style="color:#6e7977">admin / admin123</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:#fff;border-radius:8px;border:1px solid #e8eeec">
+          <div style="font-weight:700;color:#005c55">Doctor</div>
+          <div style="color:#6e7977">dr.smith / doctor123</div>
+        </div>
+        <div style="text-align:center;padding:8px;background:#fff;border-radius:8px;border:1px solid #e8eeec">
+          <div style="font-weight:700;color:#005c55">Patient</div>
+          <div style="color:#6e7977">john.doe / patient123</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dark mode toggle -->
+    <div style="display:flex;align-items:center;justify-content:center;gap:10px;margin-top:20px">
+      <span style="font-size:13px;color:#6e7977">Dark Mode</span>
+      <button class="cs-dark-toggle" onclick="DarkMode.toggle()" aria-label="Toggle dark mode"></button>
+    </div>
+
+  </div>
+</main>
+
+<footer style="padding:20px;text-align:center;font-size:12px;color:#6e7977;border-top:1px solid #e8eeec">
+  © 2026 CareSync Medical Systems · <a href="index.html" style="color:#005c55;text-decoration:none">Home</a>
+</footer>
+
+<script type="module" src="assets/js/firebase-config.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+DarkMode.init();
+
+// If already logged in, redirect
+if (Auth.isLoggedIn()) {
+  const role = Auth.currentRole();
+  const map = { Admin: 'admin-dashboard.html', Doctor: 'doctor-dashboard.html', Patient: 'patient-dashboard.html' };
+  window.location.href = map[role] || 'login.html';
+}
+
+// Quick login buttons
+document.querySelectorAll('.quick-login').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.getElementById('username').value = btn.dataset.user;
+    document.getElementById('password').value = btn.dataset.pass;
+    document.getElementById('role').value = btn.dataset.role;
+  });
+});
+
+// Password toggle
+document.getElementById('toggle-pw').addEventListener('click', () => {
+  const pw = document.getElementById('password');
+  const icon = document.querySelector('#toggle-pw .material-symbols-outlined');
+  if (pw.type === 'password') { pw.type = 'text'; icon.textContent = 'visibility_off'; }
+  else { pw.type = 'password'; icon.textContent = 'visibility'; }
+});
+
+// Form submit
+document.getElementById('login-form').addEventListener('submit', e => {
+  e.preventDefault();
+  const username = document.getElementById('username').value.trim();
+  const password = document.getElementById('password').value;
+  const role = document.getElementById('role').value;
+  let valid = true;
+
+  ['username','password','role'].forEach(f => {
+    document.getElementById(`err-${f}`).style.display = 'none';
+  });
+
+  if (!username) { showErr('username', 'Username is required'); valid = false; }
+  if (!password) { showErr('password', 'Password is required'); valid = false; }
+  if (!role) { showErr('role', 'Please select a role'); valid = false; }
+  if (!valid) return;
+
+  const btn = document.getElementById('login-btn');
+  btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite;font-size:20px">progress_activity</span> Signing in…';
+  btn.disabled = true;
+
+  setTimeout(async () => {
+    const session = await Auth.login(username, password, role);
+    if (session) {
+      showToast(`Welcome back, ${session.username}!`, 'success');
+      const map = { Admin: 'admin-dashboard.html', Doctor: 'doctor-dashboard.html', Patient: 'patient-dashboard.html' };
+      setTimeout(() => { window.location.href = map[session.role]; }, 800);
+    } else {
+      const errBanner = document.getElementById('login-error');
+      errBanner.style.display = 'flex';
+      document.getElementById('login-error-msg').textContent = 'Invalid username, password, or role. Try a demo account above.';
+      btn.innerHTML = '<span class="material-symbols-outlined" style="font-size:20px">login</span> Sign In';
+      btn.disabled = false;
+    }
+  }, 500);
+});
+
+function showErr(field, msg) {
+  const el = document.getElementById(`err-${field}`);
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+    // Handle Google Login
+    document.getElementById('google-login-btn').addEventListener('click', async () => {
+      const role = document.getElementById('role').value;
+      if (!role) {
+        showErr('role', 'Please select a role first');
+        return;
+      }
+      
+      const btn = document.getElementById('google-login-btn');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '<span class="material-symbols-outlined rotating" style="animation:spin 1s linear infinite">sync</span> Signing in...';
+      btn.disabled = true;
+
+      const user = await Auth.loginWithGoogle(role);
+      if (user) {
+        const map = { Admin:'admin-dashboard.html', Doctor:'doctor-dashboard.html', Patient:'patient-dashboard.html' };
+        window.location.href = map[role] || 'login.html';
+      } else {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        document.getElementById('login-error').style.display = 'flex';
+        document.getElementById('login-error-msg').textContent = 'Google sign-in failed';
+      }
+    });
+</script>
+<style>
+@keyframes spin { to { transform: rotate(360deg); } }
+html.dark body { background:#0f1a19; }
+html.dark .cs-card { background:#111c1b; border-color:#1e2d2c; }
+</style>
+</body>
+</html>

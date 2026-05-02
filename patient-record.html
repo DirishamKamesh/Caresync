@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Patient Record | CareSync</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"}}}}</script>
+</head>
+<body class="bg-background text-on-surface" style="min-height:100dvh;display:flex;flex-direction:column">
+
+<header style="background:#005c55;padding:16px 24px;display:flex;align-items:center;gap:12px">
+  <span class="material-symbols-outlined" style="color:#fff;font-size:28px">local_hospital</span>
+  <span style="color:#fff;font-size:20px;font-weight:800;letter-spacing:-0.01em">CareSync</span>
+  <span style="background:#9cf2e8;color:#00201d;font-size:11px;font-weight:700;padding:3px 10px;border-radius:9999px;margin-left:8px">DEMO</span>
+</header>
+
+<main style="flex:1;padding:32px 24px;max-width:600px;margin:0 auto;width:100%">
+  <div id="loading" style="text-align:center;padding:48px">
+    <span class="material-symbols-outlined" style="font-size:48px;color:#005c55;animation:spin 1s linear infinite">progress_activity</span>
+    <p style="color:#6e7977;margin-top:12px">Loading patient record…</p>
+  </div>
+  <div id="error-state" style="display:none;text-align:center;padding:48px">
+    <span class="material-symbols-outlined" style="font-size:48px;color:#ba1a1a">error</span>
+    <h2 style="font-size:20px;font-weight:700;color:#181c1c;margin-top:12px">Record Not Found</h2>
+    <p style="color:#6e7977;margin-top:6px">The QR code is invalid or the record has expired.</p>
+    <a href="login.html" class="cs-btn cs-btn-primary" style="margin-top:20px;display:inline-flex">Go to Login</a>
+  </div>
+  <div id="record-content" style="display:none">
+    <!-- Patient Info -->
+    <div class="cs-card" style="margin-bottom:20px">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:16px">
+        <div id="rec-avatar" style="width:64px;height:64px;border-radius:50%;background:#e8f7f5;display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:800;color:#005c55;flex-shrink:0"></div>
+        <div>
+          <h2 style="font-size:20px;font-weight:700" id="rec-name">—</h2>
+          <p style="font-size:13px;color:#6e7977" id="rec-uid">—</p>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+        <div><span style="font-weight:600;color:#3e4947">Age:</span> <span id="rec-age">—</span></div>
+        <div><span style="font-weight:600;color:#3e4947">Gender:</span> <span id="rec-gender">—</span></div>
+        <div><span style="font-weight:600;color:#3e4947">Blood Group:</span> <span id="rec-blood" style="color:#005c55;font-weight:700">—</span></div>
+        <div><span style="font-weight:600;color:#3e4947">Contact:</span> <span id="rec-contact">—</span></div>
+      </div>
+    </div>
+
+    <!-- Linked Prescription (if rxId in token) -->
+    <div id="rx-section" style="display:none" class="cs-card" style="margin-bottom:20px">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px;color:#005c55">Prescription Detail</h3>
+      <div id="rx-content"></div>
+    </div>
+
+    <!-- All Prescriptions -->
+    <div class="cs-card">
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:14px">All Prescriptions</h3>
+      <div id="all-rxs"></div>
+    </div>
+  </div>
+</main>
+
+<footer style="text-align:center;padding:16px;font-size:12px;color:#6e7977;border-top:1px solid #e8eeec">
+  CareSync Medical System · DEMO MODE · This is a static HTML demo
+</footer>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script>
+DarkMode.init();
+const params = new URLSearchParams(window.location.search);
+const token  = params.get('t');
+
+try {
+  if (!token) throw new Error('No token');
+  const data = JSON.parse(atob(token));
+  const pid  = data.pid;
+  const rxId = data.rxId;
+
+  const patients = Store.get(KEYS.PATIENTS);
+  const doctors  = Store.get(KEYS.DOCTORS);
+  const patient  = patients.find(p => p.id === pid);
+  if (!patient) throw new Error('Patient not found');
+
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('record-content').style.display = 'block';
+
+  const initials = patient.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('rec-avatar').textContent   = initials;
+  document.getElementById('rec-name').textContent     = patient.name;
+  document.getElementById('rec-uid').textContent      = patient.unique_patient_id;
+  document.getElementById('rec-age').textContent      = patient.age;
+  document.getElementById('rec-gender').textContent   = patient.gender;
+  document.getElementById('rec-blood').textContent    = patient.bloodGroup || '—';
+  document.getElementById('rec-contact').textContent  = patient.contact || '—';
+
+  const rxs = Store.get(KEYS.PRESCRIPTIONS).filter(r => r.patient_id === pid);
+
+  // Show linked Rx
+  if (rxId) {
+    const rx = rxs.find(r => r.id === rxId);
+    if (rx) {
+      const dr = doctors.find(d => d.id === rx.doctor_id);
+      document.getElementById('rx-section').style.display = 'block';
+      document.getElementById('rx-content').innerHTML = `
+        <p style="font-size:14px;font-weight:700;margin-bottom:6px">${escHtml(rx.diagnosis)}</p>
+        <p style="font-size:12px;color:#6e7977;margin-bottom:12px">Dr. ${escHtml(dr?.name||'Unknown')} · ${fmtDate(rx.created_at)}</p>
+        ${rx.medicines.split('\n').map(m=>`<div style="display:flex;gap:8px;margin-bottom:5px"><span class="material-symbols-outlined" style="font-size:14px;color:#005c55">radio_button_checked</span><p style="font-size:13px">${escHtml(m)}</p></div>`).join('')}
+        ${rx.notes?`<div style="margin-top:10px;padding:10px;background:#f1f4f3;border-radius:8px;font-size:13px;color:#3e4947">${escHtml(rx.notes)}</div>`:''}`;
+    }
+  }
+
+  // All Rxs
+  const allRxEl = document.getElementById('all-rxs');
+  if (rxs.length === 0) {
+    allRxEl.innerHTML = `<div class="cs-empty"><span class="material-symbols-outlined">medication</span><p>No prescriptions yet</p></div>`;
+  } else {
+    allRxEl.innerHTML = rxs.sort((a,b)=>new Date(b.created_at)-new Date(a.created_at)).map(r => {
+      const dr = doctors.find(d=>d.id===r.doctor_id);
+      return `<div style="padding:12px;border:1px solid #f1f4f3;border-radius:10px;margin-bottom:10px">
+        <p style="font-size:14px;font-weight:700">${escHtml(r.diagnosis)}</p>
+        <p style="font-size:12px;color:#6e7977;margin-bottom:8px">${escHtml(dr?.name||'Unknown')} · ${fmtDate(r.created_at)}</p>
+        <p style="font-size:12px;color:#3e4947">${escHtml(r.medicines.split('\n')[0])}${r.medicines.split('\n').length>1?' …':''}</p>
+      </div>`;
+    }).join('');
+  }
+
+} catch(e) {
+  document.getElementById('loading').style.display   = 'none';
+  document.getElementById('error-state').style.display = 'block';
+}
+</script>
+<style>@keyframes spin{to{transform:rotate(360deg)}}html.dark body{background:#0f1a19}</style>
+</body></html>

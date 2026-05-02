@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CareSync — Smart Hospital Management System</title>
+<meta name="description" content="CareSync is a demo-ready Smart Hospital Management System with role-based dashboards, prescription PDF generation, and audit logging."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","primary-container":"#0f766e","on-primary":"#ffffff","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977","outline-variant":"#bdc9c6"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"}}}}</script>
+</head>
+<body class="bg-background text-on-surface" style="overflow-x:hidden">
+
+<!-- Navbar -->
+<nav style="position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(247,250,248,0.9);backdrop-filter:blur(20px);border-bottom:1px solid #e8eeec;padding:14px 32px;display:flex;align-items:center;justify-content:space-between">
+  <div style="display:flex;align-items:center;gap:10px">
+    <div style="width:36px;height:36px;background:#005c55;border-radius:10px;display:flex;align-items:center;justify-content:center">
+      <span class="material-symbols-outlined" style="color:#fff;font-size:20px">local_hospital</span>
+    </div>
+    <span style="font-size:20px;font-weight:800;color:#005c55;letter-spacing:-0.01em">CareSync</span>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="cs-dark-toggle" onclick="DarkMode.toggle()" aria-label="Toggle dark mode"></button>
+    <a href="login.html" class="cs-btn cs-btn-primary">
+      <span class="material-symbols-outlined" style="font-size:18px">login</span> Sign In
+    </a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section style="min-height:100dvh;display:flex;align-items:center;padding:120px 32px 80px;position:relative">
+  <!-- Background gradient -->
+  <div style="position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0">
+    <div style="position:absolute;top:-10%;right:-5%;width:600px;height:600px;background:radial-gradient(circle,rgba(0,92,85,0.08) 0%,transparent 70%);border-radius:50%"></div>
+    <div style="position:absolute;bottom:0;left:-10%;width:500px;height:500px;background:radial-gradient(circle,rgba(128,213,203,0.1) 0%,transparent 70%);border-radius:50%"></div>
+  </div>
+
+  <div style="max-width:1200px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;position:relative;z-index:1">
+    <div>
+      <div style="display:inline-flex;align-items:center;gap:8px;background:#e8f7f5;border-radius:9999px;padding:6px 14px;margin-bottom:24px" data-aos="fade-up">
+        <span style="width:8px;height:8px;background:#005c55;border-radius:50%;animation:pulse 2s infinite"></span>
+        <span style="font-size:13px;font-weight:600;color:#005c55">MVP Demo — Frontend Only</span>
+      </div>
+      <h1 style="font-size:clamp(36px,5vw,60px);font-weight:900;line-height:1.1;letter-spacing:-0.03em;color:#181c1c;margin-bottom:24px" data-aos="fade-up" data-aos-delay="50">
+        Smart Hospital<br/>Management<br/><span style="color:#005c55">Made Simple.</span>
+      </h1>
+      <p style="font-size:18px;color:#3e4947;line-height:1.6;margin-bottom:32px;max-width:480px" data-aos="fade-up" data-aos-delay="100">
+        CareSync is a demo-grade hospital platform with role-based dashboards, prescription PDF generation, and a complete audit trail — all running in your browser.
+      </p>
+      <div style="display:flex;flex-wrap:wrap;gap:12px" data-aos="fade-up" data-aos-delay="150">
+        <a href="login.html" class="cs-btn cs-btn-primary" style="padding:14px 28px;font-size:16px">
+          <span class="material-symbols-outlined">login</span> Start Demo
+        </a>
+        <a href="#features" class="cs-btn cs-btn-outline" style="padding:14px 28px;font-size:16px">
+          <span class="material-symbols-outlined">expand_circle_down</span> Learn More
+        </a>
+      </div>
+      <!-- Demo badges -->
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:28px" data-aos="fade-up" data-aos-delay="200">
+        <span class="cs-demo-badge">🩺 Doctor Role</span>
+        <span class="cs-demo-badge">👤 Admin Role</span>
+        <span class="cs-demo-badge">🏥 Patient Role</span>
+        <span class="cs-demo-badge">📄 PDF Rx</span>
+        <span class="cs-demo-badge">🔲 QR Code</span>
+        <span class="cs-demo-badge">📊 Charts</span>
+      </div>
+    </div>
+
+    <!-- Hero visual (stat cards) -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px" data-aos="fade-left" data-aos-delay="200">
+      <div class="cs-stat-card" style="grid-column:1/-1">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#6e7977;margin-bottom:4px">Total Patients (Demo)</p>
+            <p id="hero-patients" style="font-size:36px;font-weight:900;color:#005c55">5</p>
+          </div>
+          <div style="background:#e8f7f5;border-radius:12px;padding:14px"><span class="material-symbols-outlined" style="font-size:28px;color:#005c55">group</span></div>
+        </div>
+      </div>
+      <div class="cs-stat-card">
+        <span class="material-symbols-outlined" style="color:#d97706">pending_actions</span>
+        <p style="font-size:24px;font-weight:800;color:#181c1c" id="hero-pending">—</p>
+        <p style="font-size:11px;text-transform:uppercase;font-weight:700;color:#6e7977">Pending</p>
+      </div>
+      <div class="cs-stat-card">
+        <span class="material-symbols-outlined" style="color:#22c55e">check_circle</span>
+        <p style="font-size:24px;font-weight:800;color:#181c1c" id="hero-done">—</p>
+        <p style="font-size:11px;text-transform:uppercase;font-weight:700;color:#6e7977">Completed</p>
+      </div>
+      <div class="cs-stat-card">
+        <span class="material-symbols-outlined" style="color:#7c3aed">medication</span>
+        <p style="font-size:24px;font-weight:800;color:#181c1c" id="hero-rxs">—</p>
+        <p style="font-size:11px;text-transform:uppercase;font-weight:700;color:#6e7977">Prescriptions</p>
+      </div>
+      <div class="cs-stat-card">
+        <span class="material-symbols-outlined" style="color:#2563eb">medical_services</span>
+        <p style="font-size:24px;font-weight:800;color:#181c1c" id="hero-doctors">—</p>
+        <p style="font-size:11px;text-transform:uppercase;font-weight:700;color:#6e7977">Doctors</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features -->
+<section id="features" style="padding:80px 32px;background:#f1f4f3">
+  <div style="max-width:1100px;margin:0 auto">
+    <h2 style="font-size:36px;font-weight:800;text-align:center;margin-bottom:12px;color:#181c1c" data-aos="fade-up">Platform Features</h2>
+    <p style="text-align:center;color:#6e7977;margin-bottom:48px;font-size:16px" data-aos="fade-up" data-aos-delay="50">Everything you need for a hospital management demo.</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:20px">
+      ${[
+        ['Admin Dashboard','bar_chart','Full analytics with Chart.js, patient/doctor CRUD, appointment approvals and audit logs.'],
+        ['Doctor Workflow','medical_services','View schedule, approve/reject appointments, create prescriptions directly from the interface.'],
+        ['Patient Portal','personal_health_record','Book appointments, view status, download prescription PDFs with embedded QR codes.'],
+        ['PDF Prescriptions','description','Professionally formatted PDF prescriptions generated via jsPDF with hospital branding.'],
+        ['QR Code Linking','qr_code','Each prescription generates a QR code linking to the verifiable patient record page.'],
+        ['Dark Mode','dark_mode','Full system-level dark mode toggle with persisted preference across all pages.'],
+        ['Audit Logging','receipt_long','Every action (create, update, delete, login) is recorded in an immutable audit trail.'],
+        ['localStorage DB','database','Complete data persistence via browser localStorage — no backend required for the demo.'],
+      ].map(([t,i,d],idx)=>`
+        <div class="cs-card" data-aos="fade-up" data-aos-delay="${idx*50}" style="display:flex;flex-direction:column;gap:12px">
+          <div style="background:#e8f7f5;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center">
+            <span class="material-symbols-outlined" style="color:#005c55">${i}</span>
+          </div>
+          <div>
+            <p style="font-size:16px;font-weight:700;margin-bottom:6px">${t}</p>
+            <p style="font-size:13px;color:#6e7977;line-height:1.6">${d}</p>
+          </div>
+        </div>`).join('')}
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section style="padding:80px 32px;text-align:center">
+  <div style="max-width:540px;margin:0 auto" data-aos="fade-up">
+    <div style="width:64px;height:64px;background:#005c55;border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 20px">
+      <span class="material-symbols-outlined" style="color:#fff;font-size:32px">local_hospital</span>
+    </div>
+    <h2 style="font-size:36px;font-weight:800;color:#181c1c;margin-bottom:14px">Ready to explore?</h2>
+    <p style="color:#6e7977;font-size:16px;margin-bottom:28px">Login with a demo account and explore all three role dashboards.</p>
+    <a href="login.html" class="cs-btn cs-btn-primary" style="padding:16px 36px;font-size:16px">
+      <span class="material-symbols-outlined">rocket_launch</span> Launch Demo
+    </a>
+  </div>
+</section>
+
+<footer style="border-top:1px solid #e8eeec;padding:24px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+  <span style="font-size:13px;color:#6e7977">© 2026 CareSync Medical Systems · Demo / Educational Use Only</span>
+  <div style="display:flex;gap:16px">
+    <a href="login.html" style="font-size:13px;color:#005c55;text-decoration:none">Sign In</a>
+    <a href="admin-reports.html" style="font-size:13px;color:#6e7977;text-decoration:none">Reports</a>
+  </div>
+</footer>
+
+<script type="module" src="assets/js/firebase-config.js"></script>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+DarkMode.init();
+// If logged in, redirect
+if (Auth.isLoggedIn()) {
+  const map = { Admin:'admin-dashboard.html', Doctor:'doctor-dashboard.html', Patient:'patient-dashboard.html' };
+  window.location.href = map[Auth.currentRole()] || 'login.html';
+}
+// Live stats
+const apts = Store.get(KEYS.APPOINTMENTS);
+const rxs  = Store.get(KEYS.PRESCRIPTIONS);
+document.getElementById('hero-pending').textContent = apts.filter(a=>a.status==='Pending').length;
+document.getElementById('hero-done').textContent    = apts.filter(a=>a.status==='Completed').length;
+document.getElementById('hero-rxs').textContent     = rxs.length;
+document.getElementById('hero-doctors').textContent = Store.get(KEYS.DOCTORS).length;
+document.getElementById('hero-patients').textContent= Store.get(KEYS.PATIENTS).length;
+</script>
+<style>
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+@media(max-width:800px){section>div>div:last-child{grid-template-columns:1fr!important}section>div{grid-template-columns:1fr!important;gap:32px!important}}
+html.dark body{background:#0f1a19}
+html.dark nav{background:rgba(15,26,25,0.9)!important;border-color:#1e2d2c!important}
+html.dark .cs-card{background:#111c1b!important;border-color:#1e2d2c!important}
+html.dark #features{background:#0a1413!important}
+</style>
+</body></html>

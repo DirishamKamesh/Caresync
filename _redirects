@@ -1,0 +1,7 @@
+/* Netlify SPA redirect — makes all paths work without a backend */
+/*  All page navigations handled by the HTML files themselves  */
+/*  No redirect needed for this multi-page static app          */
+
+# Redirect for any clean URLs to the index if needed
+# Uncomment below for SPA-mode; leave commented for multi-page HTML
+# /* /index.html 200

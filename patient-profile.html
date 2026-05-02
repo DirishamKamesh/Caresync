@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Profile | CareSync Patient</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="cs-header"><div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div></header>
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+<aside class="cs-sidebar" id="cs-sidebar"></aside>
+<div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+<main class="cs-main">
+
+  <div style="margin-bottom:24px" data-aos="fade-up">
+    <h1 class="cs-page-title">My Profile</h1>
+    <p class="cs-page-subtitle">Your personal information and health details.</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 2fr;gap:20px" class="profile-grid">
+    <!-- Card Left -->
+    <div data-aos="fade-up">
+      <div class="cs-card" style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:12px;padding:28px">
+        <div id="avatar-el" style="width:80px;height:80px;border-radius:50%;background:#e8f7f5;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:800;color:#005c55"></div>
+        <div>
+          <p style="font-size:20px;font-weight:700" id="p-name">—</p>
+          <p style="font-size:12px;color:#6e7977" id="p-uid">—</p>
+        </div>
+        <div style="width:100%;background:#f1f4f3;border-radius:10px;padding:12px;text-align:center">
+          <p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:6px">Blood Group</p>
+          <p style="font-size:24px;font-weight:900;color:#005c55" id="p-blood">—</p>
+        </div>
+        <button class="cs-btn cs-btn-outline" style="width:100%" onclick="openEditModal()">
+          <span class="material-symbols-outlined" style="font-size:18px">edit</span> Edit Profile
+        </button>
+      </div>
+    </div>
+
+    <!-- Info Grid -->
+    <div data-aos="fade-up" data-aos-delay="100">
+      <div class="cs-card" style="margin-bottom:16px">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;color:#005c55">Personal Details</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Full Name</p><p style="font-size:14px;font-weight:600" id="d-name">—</p></div>
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Age</p><p style="font-size:14px;font-weight:600" id="d-age">—</p></div>
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Gender</p><p style="font-size:14px;font-weight:600" id="d-gender">—</p></div>
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Blood Group</p><p style="font-size:14px;font-weight:600;color:#005c55" id="d-blood">—</p></div>
+          <div style="grid-column:1/-1"><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Contact</p><p style="font-size:14px;font-weight:600" id="d-contact">—</p></div>
+          <div style="grid-column:1/-1"><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Emergency Contact</p><p style="font-size:14px;font-weight:600" id="d-emergency">—</p></div>
+          <div style="grid-column:1/-1"><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Address</p><p style="font-size:14px;font-weight:600" id="d-address">—</p></div>
+        </div>
+      </div>
+
+      <div class="cs-card">
+        <h2 style="font-size:16px;font-weight:700;margin-bottom:16px;color:#005c55">Account Details</h2>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Username</p><p style="font-size:14px;font-weight:600" id="d-username">—</p></div>
+          <div><p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Role</p><p style="font-size:14px;font-weight:600;color:#005c55">Patient</p></div>
+          <div style="grid-column:1/-1">
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;color:#6e7977;margin-bottom:4px">Patient ID</p>
+            <code style="font-size:13px;background:#f1f4f3;padding:5px 10px;border-radius:6px;color:#005c55" id="d-uid">—</code>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main></div>
+<div id="cs-toast-container"></div>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="assets/js/patient.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script>
+if (!guardRoute(['Patient'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role:'Patient', activePage:'patient-profile.html' });
+document.getElementById('sidebar-toggle')?.addEventListener('click',()=>{
+  const s=document.getElementById('cs-sidebar'),o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';
+});
+
+const user    = Auth.getSession();
+const patient = Store.get(KEYS.PATIENTS).find(p => p.id === user?.linkedProfileId);
+
+if (patient) {
+  const initials = patient.name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.getElementById('avatar-el').textContent = initials;
+  document.getElementById('p-name').textContent    = patient.name;
+  document.getElementById('p-uid').textContent     = patient.unique_patient_id;
+  document.getElementById('p-blood').textContent   = patient.bloodGroup || '—';
+  document.getElementById('d-name').textContent    = patient.name;
+  document.getElementById('d-age').textContent     = patient.age;
+  document.getElementById('d-gender').textContent  = patient.gender;
+  document.getElementById('d-blood').textContent   = patient.bloodGroup || '—';
+  document.getElementById('d-contact').textContent = patient.contact || '—';
+  document.getElementById('d-emergency').textContent = patient.emergencyContact || '—';
+  document.getElementById('d-address').textContent = patient.address || '—';
+  document.getElementById('d-username').textContent = user.username;
+  document.getElementById('d-uid').textContent    = patient.unique_patient_id;
+}
+
+function openEditModal() {
+  if (!patient) return;
+  const overlay = document.createElement('div');
+  overlay.className = 'cs-modal-overlay'; overlay.id = 'edit-modal';
+  overlay.innerHTML = `
+    <div class="cs-modal">
+      <div class="cs-modal-header">
+        <h3 style="font-size:18px;font-weight:700">Edit Profile</h3>
+        <button class="cs-btn-icon" onclick="document.getElementById('edit-modal').remove()"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      <div class="cs-modal-body">
+        <div style="margin-bottom:14px"><label class="cs-label" for="e-contact">Contact Number</label>
+          <input class="cs-input" id="e-contact" value="${escHtml(patient.contact||'')}"/></div>
+        <div style="margin-bottom:14px"><label class="cs-label" for="e-emergency">Emergency Contact</label>
+          <input class="cs-input" id="e-emergency" value="${escHtml(patient.emergencyContact||'')}"/></div>
+        <div><label class="cs-label" for="e-address">Address</label>
+          <textarea class="cs-textarea" id="e-address">${escHtml(patient.address||'')}</textarea></div>
+      </div>
+      <div class="cs-modal-footer">
+        <button class="cs-btn cs-btn-outline" onclick="document.getElementById('edit-modal').remove()">Cancel</button>
+        <button class="cs-btn cs-btn-primary" id="save-edit-btn"><span class="material-symbols-outlined" style="font-size:18px">save</span>Save Changes</button>
+      </div>
+    </div>`;
+  document.body.appendChild(overlay);
+  requestAnimationFrame(()=>overlay.classList.add('open'));
+  document.getElementById('save-edit-btn').addEventListener('click',()=>{
+    const contact   = document.getElementById('e-contact').value.trim();
+    const emergency = document.getElementById('e-emergency').value.trim();
+    const address   = document.getElementById('e-address').value.trim();
+    const patients  = Store.get(KEYS.PATIENTS);
+    const idx       = patients.findIndex(p=>p.id===patient.id);
+    if (idx>-1) { patients[idx].contact=contact; patients[idx].emergencyContact=emergency; patients[idx].address=address; Store.set(KEYS.PATIENTS,patients); }
+    logAudit('PATIENT_PROFILE_UPDATED','Patient',patient.id,'Patient updated own profile');
+    showToast('Profile updated successfully','success');
+    overlay.remove();
+    setTimeout(()=>location.reload(),700);
+  });
+}
+</script>
+<style>
+@media(max-width:800px){.profile-grid{grid-template-columns:1fr!important}}
+html.dark body{background:#0f1a19}html.dark .cs-main{background:#0f1a19!important}
+</style>
+</body></html>

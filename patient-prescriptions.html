@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" class="light"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>My Prescriptions | CareSync Patient</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"primary":"#005c55","background":"#f7faf8","surface-container-low":"#f1f4f3","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem"}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+<header class="cs-header"><div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div></header>
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+<aside class="cs-sidebar" id="cs-sidebar"></aside>
+<div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+<main class="cs-main">
+  <div style="margin-bottom:24px" data-aos="fade-up">
+    <h1 class="cs-page-title">My Prescriptions</h1>
+    <p class="cs-page-subtitle">Download and view all your prescription records.</p>
+  </div>
+
+  <div id="rx-cards" style="display:flex;flex-direction:column;gap:16px"></div>
+  <div id="rx-empty" style="display:none">
+    <div class="cs-empty cs-card"><span class="material-symbols-outlined" style="font-size:48px;color:#005c55">medication</span><p>No prescriptions found</p></div>
+  </div>
+</main></div>
+<div id="cs-toast-container"></div>
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="assets/js/patient.js"></script>
+<script src="assets/js/pdf.js"></script>
+<script src="assets/js/qr.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script>
+if (!guardRoute(['Patient'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role:'Patient', activePage:'patient-prescriptions.html' });
+document.getElementById('sidebar-toggle')?.addEventListener('click',()=>{
+  const s=document.getElementById('cs-sidebar'),o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.style.display=s.classList.contains('open')?'block':'none';
+});
+
+const user    = Auth.getSession();
+const ptId    = user?.linkedProfileId;
+const doctors = Store.get(KEYS.DOCTORS);
+const rxs     = Store.get(KEYS.PRESCRIPTIONS).filter(r => r.patient_id === ptId).sort((a,b)=>new Date(b.created_at)-new Date(a.created_at));
+const container = document.getElementById('rx-cards');
+
+if (rxs.length === 0) {
+  document.getElementById('rx-empty').style.display = 'block';
+} else {
+  rxs.forEach((r, idx) => {
+    const dr = doctors.find(d => d.id === r.doctor_id);
+    const card = document.createElement('div');
+    card.className = 'cs-card';
+    card.setAttribute('data-aos', 'fade-up');
+    card.setAttribute('data-aos-delay', String(idx * 50));
+    card.style.padding = '24px';
+
+    const medLines = r.medicines.split('\n').filter(Boolean);
+    card.innerHTML = `
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;flex-wrap:wrap">
+        <div>
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+            <div style="background:#005c55;border-radius:10px;padding:10px">
+              <span class="material-symbols-outlined" style="color:#fff;font-size:20px">medication</span>
+            </div>
+            <div>
+              <p style="font-size:16px;font-weight:700">${escHtml(r.diagnosis)}</p>
+              <p style="font-size:12px;color:#6e7977">${escHtml(dr?.name||'Unknown')} · ${fmtDate(r.created_at)}</p>
+            </div>
+          </div>
+          <div>
+            <p style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.05em;color:#005c55;margin-bottom:8px">Medicines</p>
+            ${medLines.map(m=>`<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px">
+              <span class="material-symbols-outlined" style="font-size:14px;color:#005c55;margin-top:1px">radio_button_checked</span>
+              <p style="font-size:13px;color:#181c1c">${escHtml(m)}</p>
+            </div>`).join('')}
+          </div>
+          ${r.notes?`<div style="margin-top:12px;padding:10px 14px;background:#f1f4f3;border-radius:8px">
+            <p style="font-size:11px;font-weight:700;color:#005c55;margin-bottom:4px">NOTES</p>
+            <p style="font-size:13px;color:#3e4947">${escHtml(r.notes)}</p>
+          </div>`:''}
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:8px">
+          <canvas id="qr-${r.id}" style="border-radius:8px"></canvas>
+          <p style="font-size:10px;color:#6e7977;text-align:center">Scan to verify</p>
+          <button class="cs-btn cs-btn-primary" onclick="downloadPrescriptionPDF('${r.id}')">
+            <span class="material-symbols-outlined" style="font-size:16px">download</span> Download PDF
+          </button>
+        </div>
+      </div>`;
+    container.appendChild(card);
+
+    // Render QR after DOM insertion
+    setTimeout(() => renderQRCode(`qr-${r.id}`, ptId, r.id), 50);
+  });
+}
+if (window.AOS) AOS.refresh();
+</script>
+<style>html.dark body{background:#0f1a19}html.dark .cs-main{background:#0f1a19!important}</style>
+</body></html>

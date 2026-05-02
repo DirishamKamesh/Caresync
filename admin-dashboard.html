@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Admin Dashboard | CareSync</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet"/>
+<link href="assets/css/styles.css" rel="stylesheet"/>
+<script>tailwind.config={darkMode:"class",theme:{extend:{colors:{"surface-container-lowest":"#ffffff","primary":"#005c55","primary-container":"#0f766e","primary-fixed":"#9cf2e8","primary-fixed-dim":"#80d5cb","on-primary":"#ffffff","secondary":"#545f73","secondary-container":"#d5e0f8","secondary-fixed":"#d8e3fb","on-secondary":"#ffffff","on-secondary-container":"#586377","background":"#f7faf8","surface":"#f7faf8","surface-container":"#ebefed","surface-container-low":"#f1f4f3","surface-container-high":"#e5e9e7","surface-container-highest":"#e0e3e1","on-background":"#181c1c","on-surface":"#181c1c","on-surface-variant":"#3e4947","outline":"#6e7977","outline-variant":"#bdc9c6","error":"#ba1a1a"},borderRadius:{DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem",full:"9999px"},spacing:{"container-padding":"24px","stack-lg":"24px","gutter":"16px","stack-md":"12px","base":"8px"},fontFamily:{h1:["Inter"],h2:["Inter"],display:["Inter"],"label-caps":["Inter"],"body-sm":["Inter"]},fontSize:{h1:["24px",{lineHeight:"1.3",fontWeight:"600"}],h2:["20px",{lineHeight:"1.4",fontWeight:"600"}],display:["36px",{lineHeight:"1.2",fontWeight:"700"}],"label-caps":["12px",{lineHeight:"1",letterSpacing:"0.05em",fontWeight:"600"}],"body-sm":["14px",{lineHeight:"1.5",fontWeight:"400"}]}}}}</script>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- Header -->
+<header class="cs-header" id="cs-header">
+  <div id="cs-header-inner" style="display:flex;align-items:center;gap:12px;width:100%"></div>
+</header>
+
+<!-- Layout -->
+<div style="display:flex;min-height:100dvh;padding-top:64px">
+  <!-- Sidebar -->
+  <aside class="cs-sidebar" id="cs-sidebar"></aside>
+  <!-- Overlay for mobile -->
+  <div id="sidebar-overlay" onclick="document.getElementById('cs-sidebar').classList.remove('open');this.style.display='none'" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:35"></div>
+
+  <!-- Main -->
+  <main class="cs-main" style="background:#f7faf8">
+    <!-- Page Header -->
+    <div style="margin-bottom:28px" data-aos="fade-up">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <h1 class="cs-page-title">Dashboard Overview</h1>
+          <p class="cs-page-subtitle" id="welcome-msg">Welcome back. Here's what's happening today.</p>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px">
+          <button class="cs-btn cs-btn-outline cs-btn-sm" onclick="resetDemoData();location.reload()" id="reset-btn">
+            <span class="material-symbols-outlined" style="font-size:16px">restart_alt</span> Reset Demo
+          </button>
+          <span id="today-date" style="font-size:13px;color:#6e7977"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stat Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px;margin-bottom:28px">
+
+      <div class="cs-stat-card" data-aos="fade-up" data-aos-delay="0">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="background:#e8f7f5;border-radius:10px;padding:10px">
+            <span class="material-symbols-outlined" style="color:#005c55;font-size:22px">group</span>
+          </div>
+          <span style="background:#dcfce7;color:#14532d;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9999px" id="patient-trend">+0</span>
+        </div>
+        <div>
+          <p class="font-label-caps text-on-surface-variant" style="font-size:11px;margin-bottom:4px">TOTAL PATIENTS</p>
+          <p style="font-size:32px;font-weight:800;color:#181c1c;letter-spacing:-0.02em" id="stat-patients">0</p>
+        </div>
+      </div>
+
+      <div class="cs-stat-card" data-aos="fade-up" data-aos-delay="50">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="background:#e8f7f5;border-radius:10px;padding:10px">
+            <span class="material-symbols-outlined" style="color:#005c55;font-size:22px">medical_services</span>
+          </div>
+          <span style="background:#f1f4f3;color:#545f73;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9999px">Stable</span>
+        </div>
+        <div>
+          <p class="font-label-caps text-on-surface-variant" style="font-size:11px;margin-bottom:4px">ACTIVE DOCTORS</p>
+          <p style="font-size:32px;font-weight:800;color:#181c1c;letter-spacing:-0.02em" id="stat-doctors">0</p>
+        </div>
+      </div>
+
+      <div class="cs-stat-card" data-aos="fade-up" data-aos-delay="100">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="background:#fff8e6;border-radius:10px;padding:10px">
+            <span class="material-symbols-outlined" style="color:#d97706;font-size:22px">event</span>
+          </div>
+          <span style="background:#fff8e6;color:#92400e;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9999px">Today</span>
+        </div>
+        <div>
+          <p class="font-label-caps text-on-surface-variant" style="font-size:11px;margin-bottom:4px">APPOINTMENTS TODAY</p>
+          <p style="font-size:32px;font-weight:800;color:#181c1c;letter-spacing:-0.02em" id="stat-today">0</p>
+        </div>
+      </div>
+
+      <div class="cs-stat-card" data-aos="fade-up" data-aos-delay="150">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start">
+          <div style="background:#ffeaea;border-radius:10px;padding:10px">
+            <span class="material-symbols-outlined" style="color:#dc2626;font-size:22px">pending_actions</span>
+          </div>
+          <span style="background:#ffeaea;color:#7f1d1d;font-size:11px;font-weight:700;padding:3px 8px;border-radius:9999px" id="pending-trend">Pending</span>
+        </div>
+        <div>
+          <p class="font-label-caps text-on-surface-variant" style="font-size:11px;margin-bottom:4px">PENDING APPOINTMENTS</p>
+          <p style="font-size:32px;font-weight:800;color:#181c1c;letter-spacing:-0.02em" id="stat-pending">0</p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Charts Row -->
+    <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;margin-bottom:28px" class="lg:grid-cols-[2fr_1fr]">
+
+      <!-- Bar Chart -->
+      <div class="cs-card" data-aos="fade-up" data-aos-delay="0">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <h2 style="font-size:17px;font-weight:700;color:#181c1c">Appointments (Last 7 Days)</h2>
+          <span style="font-size:12px;color:#6e7977">Daily breakdown</span>
+        </div>
+        <canvas id="chart-bar" height="200"></canvas>
+      </div>
+
+      <!-- Doughnut Chart -->
+      <div class="cs-card" data-aos="fade-up" data-aos-delay="100">
+        <div style="margin-bottom:20px">
+          <h2 style="font-size:17px;font-weight:700;color:#181c1c">Status Breakdown</h2>
+        </div>
+        <canvas id="chart-doughnut" height="200"></canvas>
+        <div id="doughnut-legend" style="margin-top:16px;display:flex;flex-direction:column;gap:8px;font-size:12px"></div>
+      </div>
+    </div>
+
+    <!-- Recent Appointments + Activity -->
+    <div style="display:grid;grid-template-columns:3fr 2fr;gap:20px" class="recent-grid">
+
+      <!-- Recent Appointments Table -->
+      <div class="cs-card" data-aos="fade-up">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="font-size:17px;font-weight:700;color:#181c1c">Recent Appointments</h2>
+          <a href="admin-appointments.html" class="cs-btn cs-btn-outline cs-btn-sm">View All</a>
+        </div>
+        <div class="cs-table-wrapper" style="border:none;border-radius:0">
+          <table class="cs-table">
+            <thead>
+              <tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th></tr>
+            </thead>
+            <tbody id="recent-appointments-body">
+              <tr><td colspan="4"><div class="cs-empty"><span class="material-symbols-outlined">hourglass_empty</span>Loading…</div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Audit Log Preview -->
+      <div class="cs-card" data-aos="fade-up" data-aos-delay="100">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <h2 style="font-size:17px;font-weight:700;color:#181c1c">Recent Activity</h2>
+          <a href="admin-reports.html" class="cs-btn cs-btn-outline cs-btn-sm">Audit Log</a>
+        </div>
+        <div id="activity-feed" style="display:flex;flex-direction:column;gap:0"></div>
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+<!-- Toast Container -->
+<div id="cs-toast-container"></div>
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/demo-seed.js"></script>
+<script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="assets/js/aos-init.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="assets/js/charts.js"></script>
+<script>
+// Guard
+if (!guardRoute(['Admin'])) throw new Error('Unauthorized');
+DarkMode.init();
+initDashboardPage({ role: 'Admin', activePage: 'admin-dashboard.html' });
+
+// Mobile sidebar toggle fix
+document.getElementById('sidebar-toggle')?.addEventListener('click', () => {
+  const s = document.getElementById('cs-sidebar');
+  const o = document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');
+  o.style.display = s.classList.contains('open') ? 'block' : 'none';
+});
+
+// Stats
+const patients = Store.get(KEYS.PATIENTS);
+const doctors  = Store.get(KEYS.DOCTORS);
+const apts     = Store.get(KEYS.APPOINTMENTS);
+const today    = new Date().toDateString();
+
+const todayApts   = apts.filter(a => new Date(a.date_time).toDateString() === today);
+const pendingApts = apts.filter(a => a.status === 'Pending');
+
+document.getElementById('stat-patients').textContent = patients.length;
+document.getElementById('stat-doctors').textContent  = doctors.length;
+document.getElementById('stat-today').textContent    = todayApts.length;
+document.getElementById('stat-pending').textContent  = pendingApts.length;
+document.getElementById('today-date').textContent    = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+
+const user = Auth.currentUser();
+document.getElementById('welcome-msg').textContent = `Welcome back, ${user?.username || 'Admin'}. Here's what's happening today.`;
+
+// Recent Appointments Table
+const recentApts = [...apts].sort((a,b) => new Date(b.date_time)-new Date(a.date_time)).slice(0,6);
+const tbody = document.getElementById('recent-appointments-body');
+if (recentApts.length === 0) {
+  tbody.innerHTML = `<tr><td colspan="4"><div class="cs-empty"><span class="material-symbols-outlined">event_busy</span>No appointments yet</div></td></tr>`;
+} else {
+  tbody.innerHTML = recentApts.map(a => {
+    const pt = patients.find(p=>p.id===a.patient_id);
+    const dr = doctors.find(d=>d.id===a.doctor_id);
+    return `<tr onclick="window.location='admin-appointments.html'" style="cursor:pointer">
+      <td><div style="display:flex;align-items:center;gap:8px">${avatarEl(pt?.name||'?',30)}<span style="font-size:13px;font-weight:600">${escHtml(pt?.name||'Unknown')}</span></div></td>
+      <td style="font-size:13px;color:#3e4947">${escHtml(dr?.name||'Unknown')}</td>
+      <td style="font-size:12px;color:#6e7977">${fmtDateTime(a.date_time)}</td>
+      <td>${statusBadge(a.status)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// Activity Feed
+const logs = Store.get(KEYS.AUDIT_LOGS).slice(0,6);
+const actionIcons = { PATIENT_CREATED:'person_add', APPOINTMENT_COMPLETED:'check_circle', APPOINTMENT_REJECTED:'cancel', PRESCRIPTION_CREATED:'medication', DOCTOR_ADDED:'medical_services', APPOINTMENT_APPROVED:'event_available' };
+const actionColors = { PATIENT_CREATED:'#3b82f6', APPOINTMENT_COMPLETED:'#22c55e', APPOINTMENT_REJECTED:'#ef4444', PRESCRIPTION_CREATED:'#8b5cf6', DOCTOR_ADDED:'#005c55', APPOINTMENT_APPROVED:'#22c55e' };
+const feed = document.getElementById('activity-feed');
+feed.innerHTML = logs.map((l,i) => `
+  <div class="cs-timeline-item" style="padding-bottom:${i<logs.length-1?'16px':'0'}">
+    <div style="width:36px;height:36px;border-radius:50%;background:${actionColors[l.action]||'#6e7977'}20;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+      <span class="material-symbols-outlined" style="font-size:17px;color:${actionColors[l.action]||'#6e7977'}">${actionIcons[l.action]||'info'}</span>
+    </div>
+    <div>
+      <p style="font-size:13px;font-weight:600;color:#181c1c;margin-bottom:2px">${escHtml(l.action.replace(/_/g,' ').toLowerCase().replace(/\b\w/g,c=>c.toUpperCase()))}</p>
+      <p style="font-size:12px;color:#6e7977">${escHtml(l.actor_username)} · ${timeAgo(l.timestamp)}</p>
+    </div>
+  </div>`).join('');
+
+// Charts
+if (window.initCharts) initCharts(apts);
+</script>
+<style>
+@media(max-width:900px){.recent-grid{grid-template-columns:1fr!important}}
+@media(max-width:900px){#cs-sidebar+div+main>div:nth-child(3){grid-template-columns:1fr!important}}
+html.dark body{background:#0f1a19}
+html.dark .cs-main{background:#0f1a19!important}
+html.dark #today-date{color:#7a9490}
+</style>
+</body>
+</html>

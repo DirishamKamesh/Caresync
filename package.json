@@ -1,0 +1,21 @@
+{
+  "name": "CareSync Hospital Management System",
+  "version": "1.0.0-mvp",
+  "description": "Smart Hospital Management System — static HTML demo with role-based dashboards, prescription PDF, QR codes, and audit logging.",
+  "keywords": [
+    "hospital",
+    "management",
+    "healthcare",
+    "demo",
+    "tailwindcss"
+  ],
+  "author": "CareSync Team",
+  "license": "MIT",
+  "scripts": {
+    "start": "npx live-server --open=index.html --port=5500",
+    "serve": "npx http-server . -p 5500 -o"
+  },
+  "dependencies": {
+    "mongodb": "^7.2.0"
+  }
+}

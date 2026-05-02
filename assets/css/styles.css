@@ -1,0 +1,761 @@
+/* ============================================================
+   CareSync — Global Styles
+   Design system built on Material You tokens from Stitch designs
+   ============================================================ */
+
+/* --- Google Fonts --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
+
+/* --- Base Reset --- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: #f7faf8;
+  color: #181c1c;
+  min-height: 100dvh;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- Dark Mode --- */
+html.dark body {
+  background-color: #0f1a19;
+  color: #e8f0ee;
+}
+
+/* --- Material Symbols --- */
+.material-symbols-outlined {
+  font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  vertical-align: middle;
+  user-select: none;
+}
+
+/* --- Custom Scrollbar --- */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #bdc9c6; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #6e7977; }
+html.dark ::-webkit-scrollbar-thumb { background: #2d3130; }
+
+/* ============================================================
+   SIDEBAR LAYOUT
+   ============================================================ */
+.cs-layout {
+  display: flex;
+  min-height: 100dvh;
+  padding-top: 64px; /* header height */
+}
+
+.cs-sidebar {
+  position: fixed;
+  top: 64px;
+  left: 0;
+  bottom: 0;
+  width: 280px;
+  background: #ffffff;
+  border-right: 1px solid #e0e3e1;
+  display: flex;
+  flex-direction: column;
+  z-index: 40;
+  overflow-y: auto;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+html.dark .cs-sidebar {
+  background: #111c1b;
+  border-right-color: #1e2d2c;
+}
+
+.cs-sidebar-collapsed {
+  transform: translateX(-100%);
+}
+
+.cs-main {
+  flex: 1;
+  margin-left: 280px;
+  padding: 24px;
+  min-height: calc(100dvh - 64px);
+  transition: margin-left 0.3s ease;
+}
+
+@media (max-width: 1023px) {
+  .cs-main { margin-left: 0; }
+  .cs-sidebar { transform: translateX(-100%); }
+  .cs-sidebar.open { transform: translateX(0); }
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.cs-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid #e0e3e1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  z-index: 50;
+  transition: background-color 0.3s ease;
+}
+
+html.dark .cs-header {
+  background: rgba(17,28,27,0.90);
+  border-bottom-color: #1e2d2c;
+}
+
+/* ============================================================
+   NAV ITEMS
+   ============================================================ */
+.cs-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #3e4947;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  margin: 2px 8px;
+}
+
+.cs-nav-item:hover {
+  background: #f1f4f3;
+  color: #005c55;
+  padding-left: 20px;
+}
+
+html.dark .cs-nav-item { color: #a3b5b2; }
+html.dark .cs-nav-item:hover { background: #1a2c2a; color: #80d5cb; }
+
+.cs-nav-item.active {
+  background: #e8f7f5;
+  color: #005c55;
+  border-left: 4px solid #005c55;
+  border-radius: 0 8px 8px 0;
+  margin-left: 0;
+  padding-left: 20px;
+}
+
+html.dark .cs-nav-item.active {
+  background: #0a2421;
+  color: #80d5cb;
+  border-left-color: #80d5cb;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+.cs-card {
+  background: #ffffff;
+  border: 1px solid rgba(189,201,198,0.3);
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 4px 12px rgba(0,0,0,0.03);
+  padding: 24px;
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.cs-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+
+html.dark .cs-card {
+  background: #111c1b;
+  border-color: rgba(30,45,44,0.8);
+}
+
+.cs-stat-card {
+  background: #ffffff;
+  border: 1px solid #e8eeec;
+  border-radius: 12px;
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cs-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+html.dark .cs-stat-card {
+  background: #111c1b;
+  border-color: #1e2d2c;
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.cs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.cs-btn:active { transform: scale(0.97); }
+
+.cs-btn-primary {
+  background: #005c55;
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(0,92,85,0.25);
+}
+
+.cs-btn-primary:hover { background: #0f766e; box-shadow: 0 4px 16px rgba(0,92,85,0.35); }
+
+.cs-btn-outline {
+  background: transparent;
+  border: 1px solid #bdc9c6;
+  color: #3e4947;
+}
+
+.cs-btn-outline:hover { background: #f1f4f3; border-color: #6e7977; }
+
+html.dark .cs-btn-outline { border-color: #2d3130; color: #a3b5b2; }
+html.dark .cs-btn-outline:hover { background: #1a2c2a; }
+
+.cs-btn-danger { background: #ba1a1a; color: #fff; }
+.cs-btn-danger:hover { background: #93000a; }
+
+.cs-btn-success { background: #1a6b2f; color: #fff; }
+.cs-btn-success:hover { background: #155124; }
+
+.cs-btn-sm { padding: 6px 12px; font-size: 12px; }
+.cs-btn-icon {
+  padding: 8px;
+  border-radius: 50%;
+  background: transparent;
+  border: none;
+  color: #6e7977;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cs-btn-icon:hover { background: #f1f4f3; color: #005c55; }
+
+/* ============================================================
+   BADGES / STATUS
+   ============================================================ */
+.cs-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.cs-badge::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.cs-badge-pending { background: #fff8e6; color: #92400e; }
+.cs-badge-pending::before { background: #f59e0b; }
+
+.cs-badge-approved { background: #dcfce7; color: #14532d; }
+.cs-badge-approved::before { background: #22c55e; }
+
+.cs-badge-rejected { background: #ffeaea; color: #7f1d1d; }
+.cs-badge-rejected::before { background: #ef4444; }
+
+.cs-badge-completed { background: #dbeafe; color: #1e3a5f; }
+.cs-badge-completed::before { background: #3b82f6; }
+
+.cs-badge-admin { background: #fce7f3; color: #831843; }
+.cs-badge-doctor { background: #e0e7ff; color: #312e81; }
+.cs-badge-patient { background: #d1fae5; color: #064e3b; }
+
+/* ============================================================
+   TABLES
+   ============================================================ */
+.cs-table-wrapper {
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(189,201,198,0.3);
+  background: #ffffff;
+}
+
+html.dark .cs-table-wrapper {
+  background: #111c1b;
+  border-color: #1e2d2c;
+}
+
+.cs-table { width: 100%; border-collapse: collapse; }
+
+.cs-table th {
+  background: #f1f4f3;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #3e4947;
+  white-space: nowrap;
+}
+
+html.dark .cs-table th { background: #0d1a19; color: #7a9490; }
+
+.cs-table td {
+  padding: 14px 16px;
+  font-size: 14px;
+  color: #181c1c;
+  border-bottom: 1px solid #f1f4f3;
+}
+
+html.dark .cs-table td { color: #d4e0dd; border-bottom-color: #1a2c2a; }
+
+.cs-table tr:last-child td { border-bottom: none; }
+
+.cs-table tbody tr {
+  transition: background 0.15s ease;
+  cursor: pointer;
+}
+
+.cs-table tbody tr:hover { background: rgba(0,92,85,0.03); }
+html.dark .cs-table tbody tr:hover { background: rgba(128,213,203,0.05); }
+
+/* ============================================================
+   FORMS
+   ============================================================ */
+.cs-input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #bdc9c6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #181c1c;
+  background: #f1f4f3;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.cs-input:focus {
+  border-color: #005c55;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(0,92,85,0.12);
+}
+
+html.dark .cs-input {
+  background: #1a2c2a;
+  border-color: #2d3130;
+  color: #d4e0dd;
+}
+html.dark .cs-input:focus {
+  border-color: #80d5cb;
+  background: #0f1a19;
+  box-shadow: 0 0 0 3px rgba(128,213,203,0.15);
+}
+
+.cs-input-icon {
+  position: relative;
+}
+.cs-input-icon .cs-input { padding-left: 40px; }
+.cs-input-icon .icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  color: #6e7977;
+  pointer-events: none;
+}
+
+.cs-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #3e4947;
+  margin-bottom: 6px;
+}
+html.dark .cs-label { color: #7a9490; }
+
+.cs-select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #bdc9c6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #181c1c;
+  background: #f1f4f3;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%236e7977' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  padding-right: 36px;
+}
+
+.cs-select:focus { border-color: #005c55; box-shadow: 0 0 0 3px rgba(0,92,85,0.12); }
+
+html.dark .cs-select {
+  background-color: #1a2c2a;
+  border-color: #2d3130;
+  color: #d4e0dd;
+}
+
+.cs-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #bdc9c6;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  color: #181c1c;
+  background: #f1f4f3;
+  outline: none;
+  resize: vertical;
+  min-height: 90px;
+  transition: all 0.2s ease;
+}
+.cs-textarea:focus { border-color: #005c55; box-shadow: 0 0 0 3px rgba(0,92,85,0.12); }
+html.dark .cs-textarea { background: #1a2c2a; border-color: #2d3130; color: #d4e0dd; }
+
+/* ============================================================
+   MODAL
+   ============================================================ */
+.cs-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease;
+}
+
+.cs-modal-overlay.open { opacity: 1; pointer-events: auto; }
+
+.cs-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 560px;
+  max-height: 90dvh;
+  overflow-y: auto;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.25s ease;
+}
+
+html.dark .cs-modal { background: #111c1b; }
+
+.cs-modal-overlay.open .cs-modal {
+  transform: translateY(0) scale(1);
+}
+
+.cs-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid #e8eeec;
+}
+
+html.dark .cs-modal-header { border-bottom-color: #1e2d2c; }
+
+.cs-modal-body { padding: 24px; }
+.cs-modal-footer {
+  padding: 16px 24px;
+  border-top: 1px solid #e8eeec;
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+html.dark .cs-modal-footer { border-top-color: #1e2d2c; }
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+#cs-toast-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 8px;
+}
+
+.cs-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  animation: toastIn 0.3s ease forwards;
+  min-width: 280px;
+  max-width: 380px;
+}
+
+.cs-toast.removing { animation: toastOut 0.3s ease forwards; }
+
+.cs-toast-success { background: #005c55; color: #fff; }
+.cs-toast-error   { background: #ba1a1a; color: #fff; }
+.cs-toast-info    { background: #1e3a5f; color: #fff; }
+.cs-toast-warning { background: #854d0e; color: #fff; }
+
+@keyframes toastIn {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes toastOut {
+  from { opacity: 1; transform: translateX(0); }
+  to   { opacity: 0; transform: translateX(40px); }
+}
+
+/* ============================================================
+   DEMO MODE BADGE
+   ============================================================ */
+.cs-demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #fff8e6;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+  border-radius: 9999px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  animation: pulse-border 2s ease-in-out infinite;
+}
+
+@keyframes pulse-border {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(245,158,11,0.4); }
+  50%       { box-shadow: 0 0 0 4px rgba(245,158,11,0); }
+}
+
+/* ============================================================
+   PAGINATION
+   ============================================================ */
+.cs-pagination {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.cs-page-btn {
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: #3e4947;
+  transition: all 0.15s ease;
+}
+
+.cs-page-btn:hover { background: #e8eeec; }
+.cs-page-btn.active { background: #005c55; color: #fff; }
+.cs-page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+html.dark .cs-page-btn { color: #a3b5b2; }
+html.dark .cs-page-btn:hover { background: #1a2c2a; }
+html.dark .cs-page-btn.active { background: #005c55; color: #fff; }
+
+/* ============================================================
+   SEARCH HIGHLIGHT
+   ============================================================ */
+mark.cs-highlight {
+  background: rgba(0,92,85,0.15);
+  color: #005c55;
+  border-radius: 2px;
+  padding: 0 2px;
+  font-weight: 600;
+}
+html.dark mark.cs-highlight { background: rgba(128,213,203,0.2); color: #80d5cb; }
+
+/* ============================================================
+   SECTION TITLE
+   ============================================================ */
+.cs-page-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: #181c1c;
+  line-height: 1.3;
+}
+html.dark .cs-page-title { color: #e8f0ee; }
+
+.cs-page-subtitle {
+  font-size: 14px;
+  color: #3e4947;
+  margin-top: 4px;
+}
+html.dark .cs-page-subtitle { color: #7a9490; }
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+.cs-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   DARK MODE TOGGLE
+   ============================================================ */
+.cs-dark-toggle {
+  width: 42px;
+  height: 24px;
+  background: #bdc9c6;
+  border-radius: 9999px;
+  position: relative;
+  cursor: pointer;
+  border: none;
+  transition: background 0.3s ease;
+  flex-shrink: 0;
+}
+
+.cs-dark-toggle::after {
+  content: '';
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  transition: transform 0.3s ease;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+
+html.dark .cs-dark-toggle { background: #005c55; }
+html.dark .cs-dark-toggle::after { transform: translateX(18px); }
+
+/* ============================================================
+   LANDING PAGE SPECIFIC
+   ============================================================ */
+.cs-hero-gradient {
+  background: linear-gradient(135deg, #005c55 0%, #0f766e 40%, #134e4a 100%);
+}
+
+.cs-feature-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  flex-shrink: 0;
+}
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.cs-divider {
+  height: 1px;
+  background: #e8eeec;
+  margin: 24px 0;
+}
+html.dark .cs-divider { background: #1e2d2c; }
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+.cs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  gap: 12px;
+  color: #6e7977;
+  text-align: center;
+}
+
+.cs-empty .material-symbols-outlined { font-size: 48px; opacity: 0.5; }
+
+/* ============================================================
+   ACTIVITY TIMELINE
+   ============================================================ */
+.cs-timeline-item {
+  display: flex;
+  gap: 16px;
+  position: relative;
+}
+
+.cs-timeline-item:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: -16px;
+  width: 1px;
+  background: #e8eeec;
+}
+
+html.dark .cs-timeline-item:not(:last-child)::before { background: #1e2d2c; }
+
+/* ============================================================
+   RESPONSIVE UTILITIES
+   ============================================================ */
+@media (max-width: 768px) {
+  .cs-main { padding: 16px; }
+  .cs-modal { max-width: 100%; border-radius: 12px 12px 0 0; margin-top: auto; }
+  #cs-toast-container { bottom: 80px; right: 12px; left: 12px; }
+  .cs-toast { min-width: unset; }
+}
+
+/* Bottom nav spacer on mobile */
+@media (max-width: 768px) {
+  .has-bottom-nav { padding-bottom: 72px; }
+}
+
+/* ============================================================
+   AOS CUSTOM DELAYS
+   ============================================================ */
+[data-aos][data-aos-delay="50"]  { transition-delay: 50ms !important; }
+[data-aos][data-aos-delay="150"] { transition-delay: 150ms !important; }
+[data-aos][data-aos-delay="250"] { transition-delay: 250ms !important; }
+[data-aos][data-aos-delay="350"] { transition-delay: 350ms !important; }
